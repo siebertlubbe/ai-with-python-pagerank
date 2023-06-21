@@ -40,5 +40,18 @@ class TestPageRank(unittest.TestCase):
         self.assertAlmostEqual(pageranks["2.html"], 0.475, delta=0.01)
         self.assertAlmostEqual(pageranks["3.html"], 0.475, delta=0.01)
 
+    def test_iterate_pagerank(self):
+        corpus = {
+            "1.html": {"2.html", "3.html"},
+            "2.html": {"3.html"},
+            "3.html": {"2.html"}
+        }
+        damping_factor = 0.85
+        pageranks = pr.iterate_pagerank(corpus, damping_factor)
+        self.assertEqual(len(pageranks), 3)
+        self.assertAlmostEqual(pageranks["1.html"], 0.05, delta=0.01)
+        self.assertAlmostEqual(pageranks["2.html"], 0.475, delta=0.01)
+        self.assertAlmostEqual(pageranks["3.html"], 0.475, delta=0.01)
+
 if __name__ == '__main__':
     unittest.main()

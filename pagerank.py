@@ -120,7 +120,37 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+
+    # Initialize the page rank dictionary
+    page_rank = {}
+
+    # Assign 1 / N to each page
+    for page in corpus:
+        page_rank[page] = 1 / len(corpus)
+
+    # Repeat until no PageRank value changes by more than 0.001 between the current rank values and the new rank values
+    convergence_achieved = False
+    while not convergence_achieved:
+        convergence_achieved = True
+        # For each page, calculate the new rank value based on the current rank values
+        for current_page in page_rank:
+            # For all pages linked to the current page, calculate the sum of their page_rank values, devided by the number of links on the linked page
+            sum_page_rank = 0
+            for linked_page in corpus:
+                if current_page in corpus[linked_page] and current_page != linked_page:
+                    sum_page_rank += page_rank[linked_page] / len(corpus[linked_page])
+            # Calculate the new rank value for the current page
+            new_rank_value = (1 - damping_factor) / len(corpus) + damping_factor * sum_page_rank
+            # Calculate the difference between the new rank value and the current rank value
+            difference = abs(new_rank_value - page_rank[current_page])
+            # Update the current rank value with the new rank value
+            page_rank[current_page] = new_rank_value
+            # If the difference between the new rank value and the current rank value is greater than 0.001, then set a convergence variable to False
+            if difference > 0.001:
+                convergence_achieved = False
+
+    # Return the page rank dictionary
+    return page_rank
 
 
 if __name__ == "__main__":
